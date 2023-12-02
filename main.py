@@ -2,13 +2,11 @@
 from fastapi import FastAPI
 import uvicorn
 
+from apps.movies.urls import MOVIE
+
 app = FastAPI()
 
-
-@app.get("/")
-def print_hi():
-    return {"hello": "word"}
-
+app.include_router(MOVIE, prefix="/M", tags=["电影查询接口"])
 
 # 按间距中的绿色按钮以运行脚本。
 if __name__ == '__main__':
