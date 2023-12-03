@@ -1,6 +1,6 @@
 import json
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from pydantic import BaseModel
 
 from config import ROOT
@@ -102,6 +102,21 @@ def delete_movie(m_id: int, m_scriptwriter: str):
             return {"result": "电影更新成功"}
 
     return {"result": f"id为{m_id}的电影不存在"}
+
+
+# 为查询参数添加校验
+@MOVIE.get("/movies/query/")
+def query_movie(q: str | None = Query(default="title", title="校验", description="为查询参数添加校验", min_length=1,
+                                      max_length=20)):
+    with open(ROOT + '\\database\\movies.json', mode="r") as f:
+        resp_movies = json.load(f)
+    f.close()
+
+    for i in resp_movies:
+        if q == i["m_title"]:
+            return i
+
+    return {"result": f"未查询到名字为{q}的电影"}
 
 
 if __name__ == '__main__':
