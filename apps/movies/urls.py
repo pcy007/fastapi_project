@@ -88,7 +88,7 @@ def delete_movie(m_id: int):
 
 # 更新单个电影信息
 @MOVIE.put("/update/{m_id}")
-def delete_movie(m_id: int, m_scriptwriter: str):
+def update_movie(m_id: int, m_scriptwriter: str):
     with open(ROOT + '\\database\\movies.json', mode="r") as f:
         movies = json.load(f)
     f.close()
