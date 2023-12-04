@@ -107,7 +107,7 @@ def update_movie(m_id: int, m_scriptwriter: str):
 # 为查询参数添加校验Query,为路径参数添加校验Path,为请求体参数添加校验Body
 @MOVIE.put("/movies/query/{m_id}")
 def query_movie(m_id: int = Path(title="m_id必须大于等于1", ge=1),
-                q: str | None = Query(default="title", title="校验", description="为查询参数添加校验", min_length=1,
+                q: str | None = Query(default="title", title="校验", description="--为查询参数添加校验--", min_length=1,
                                       max_length=20), mov: Movie | None = Body(title="这是请求题")):
     result = {
         "m_id": m_id,
