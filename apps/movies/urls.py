@@ -1,6 +1,6 @@
 import json
 
-from fastapi import APIRouter, Query, Path
+from fastapi import APIRouter, Query, Path, Body
 from pydantic import BaseModel
 
 from config import ROOT
@@ -104,20 +104,17 @@ def update_movie(m_id: int, m_scriptwriter: str):
     return {"result": f"id为{m_id}的电影不存在"}
 
 
-# 为查询参数添加校验Query,为路径参数添加校验Path
-@MOVIE.get("/movies/query/{m_id}")
-def query_movie(m_id: int = Path(default=..., title="m_id必须大于等于1", ge=1),
+# 为查询参数添加校验Query,为路径参数添加校验Path,为请求体参数添加校验Body
+@MOVIE.put("/movies/query/{m_id}")
+def query_movie(m_id: int = Path(title="m_id必须大于等于1", ge=1),
                 q: str | None = Query(default="title", title="校验", description="为查询参数添加校验", min_length=1,
-                                      max_length=20)):
-    with open(ROOT + '\\database\\movies.json', mode="r") as f:
-        resp_movies = json.load(f)
-    f.close()
-
-    for i in resp_movies:
-        if m_id == i["m_id"] and q == i["m_title"]:
-            return i
-
-    return {"result": f"未查询到名字为{q}的电影"}
+                                      max_length=20), mov: Movie | None = Body(title="这是请求题")):
+    result = {
+        "m_id": m_id,
+        "q": q,
+        "mov": mov
+    }
+    return result
 
 
 if __name__ == '__main__':
