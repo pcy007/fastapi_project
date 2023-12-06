@@ -1,15 +1,16 @@
 import json
 
 from fastapi import APIRouter, Query, Path, Body
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from config import ROOT
 
 
+#  Field 的工作方式和 Query、Path 和 Body 相同，包括它们的参数等等也完全相同
 class Movie(BaseModel):
-    m_id: int
+    m_id: int = Field(title="电影 id", gt=1, description='# 电影id')
     m_title: str  # 电影名字
-    m_director: str | None = None  # 导演
+    m_director: str | None = Field(default=None, title="# 导演", max_length=20, min_length=1)
     m_scriptwriter: str | None = None  # 编剧
     m_actors: list[str] | None  # 主演
     m_genre: str | None = "剧情片"  # 题材
@@ -104,17 +105,17 @@ def update_movie(m_id: int, m_scriptwriter: str):
     return {"result": f"id为{m_id}的电影不存在"}
 
 
-# 为查询参数添加校验Query,为路径参数添加校验Path,为请求体参数添加校验Body
-@MOVIE.put("/movies/query/{m_id}")
-def query_movie(m_id: int = Path(title="m_id必须大于等于1", ge=1),
-                q: str | None = Query(default="title", title="校验", description="--为查询参数添加校验--", min_length=1,
-                                      max_length=20), mov: Movie | None = Body(title="这是请求题")):
-    result = {
-        "m_id": m_id,
-        "q": q,
-        "mov": mov
-    }
-    return result
+# # 为查询参数添加校验Query,为路径参数添加校验Path,为请求体参数添加校验Body,是从fastapi 导入的
+# @MOVIE.put("/movies/query/{m_id}")
+# def query_movie(m_id: int = Path(title="m_id必须大于等于1", ge=1),
+#                 q: str | None = Query(default="title", title="校验", description="--为查询参数添加校验--", min_length=1,
+#                                       max_length=20), mov: Movie | None = Body(title="这是请求题")):
+#     result = {
+#         "m_id": m_id,
+#         "q": q,
+#         "mov": mov
+#     }
+#     return result
 
 
 if __name__ == '__main__':
